@@ -151,7 +151,7 @@ function updateClock() {
 		hour: '2-digit',
 		minute: '2-digit',
 		second: '2-digit',
-		hour12: true
+		hour12: false
 	};
 	clock.textContent = now.toLocaleString(undefined, options);
 }
@@ -164,4 +164,98 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	refreshStory(); // Initial story fetch and render
 	setInterval(refreshStory, 60000); // Story refresh every 60 seconds
+	// === Subtle Sparkle/Dot Animation ===
+	const canvas = document.getElementById('sparkle-bg');
+	const ctx = canvas.getContext('2d');
+	let width = window.innerWidth;
+	let height = window.innerHeight;
+	canvas.width = width;
+	canvas.height = height;
+
+	function resizeCanvas() {
+		width = window.innerWidth;
+		height = window.innerHeight;
+		canvas.width = width;
+		canvas.height = height;
+	}
+	window.addEventListener('resize', resizeCanvas);
+
+			// Sparkle/dot/star config
+			const NUM_PARTICLES = Math.round(44 * 1.2); // 20% more particles
+			const particles = [];
+			for (let i = 0; i < NUM_PARTICLES; i++) {
+				// 70% dots, 30% stars
+				const isStar = Math.random() < 0.3;
+				// Increase size variation
+				const r = isStar
+					? (2.2 + Math.random() * 3.8) // stars: 2.2 - 6.0
+					: (1.0 + Math.random() * 3.5); // dots: 1.0 - 4.5
+				particles.push({
+					x: Math.random() * width,
+					y: Math.random() * height,
+					r,
+					opacity: isStar ? (0.18 + Math.random() * 0.22) : (0.13 + Math.random() * 0.27),
+					dx: (Math.random() - 0.5) * 0.275, // 25% more movement
+					dy: (Math.random() - 0.5) * 0.275, // 25% more movement
+					phase: Math.random() * Math.PI * 2,
+					isStar,
+					twinkleSpeed: isStar ? (0.8 + Math.random() * 1.2) : 0,
+					twinklePhase: Math.random() * Math.PI * 2
+				});
+			}
+
+	function animateSparkles() {
+		ctx.clearRect(0, 0, width, height);
+			for (let p of particles) {
+				// Subtle floating movement
+				p.x += p.dx + Math.sin(Date.now()/1200 + p.phase) * 0.05;
+				p.y += p.dy + Math.cos(Date.now()/1200 + p.phase) * 0.05;
+				// Wrap around edges
+				if (p.x < 0) p.x = width;
+				if (p.x > width) p.x = 0;
+				if (p.y < 0) p.y = height;
+				if (p.y > height) p.y = 0;
+				// Twinkle effect for stars
+				let opacity = p.opacity;
+				if (p.isStar) {
+					opacity *= 0.7 + 0.3 * Math.abs(Math.sin(Date.now()/900 * p.twinkleSpeed + p.twinklePhase));
+				}
+				ctx.save();
+				ctx.shadowColor = '#fff';
+				ctx.shadowBlur = p.isStar ? 14 : 8;
+				if (p.isStar) {
+					// Draw a subtle star shape
+					ctx.beginPath();
+					const spikes = 5;
+					const outerRadius = p.r;
+					const innerRadius = p.r * 0.45;
+					let rot = Math.PI / 2 * 3;
+					let x = p.x;
+					let y = p.y;
+					ctx.moveTo(x, y - outerRadius);
+					for (let i = 0; i < spikes; i++) {
+						x = p.x + Math.cos(rot) * outerRadius;
+						y = p.y + Math.sin(rot) * outerRadius;
+						ctx.lineTo(x, y);
+						rot += Math.PI / spikes;
+						x = p.x + Math.cos(rot) * innerRadius;
+						y = p.y + Math.sin(rot) * innerRadius;
+						ctx.lineTo(x, y);
+						rot += Math.PI / spikes;
+					}
+					ctx.closePath();
+					ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+					ctx.fill();
+				} else {
+					// Draw a dot
+					ctx.beginPath();
+					ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+					ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+					ctx.fill();
+				}
+				ctx.restore();
+			}
+			requestAnimationFrame(animateSparkles);
+		}
+		animateSparkles();
 });
