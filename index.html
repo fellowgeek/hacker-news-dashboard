@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, initial-scale=1.0">
+  <title>Hacker News Live Headline Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts: Momo Trust Display & Roboto Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Momo+Trust+Display:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <!-- QRCode.js (lightweight QR code generator) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <!-- day.js (lightweight date library) and relativeTime plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/dayjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.10/plugin/relativeTime.js"></script>
+</head>
+<body>
+  <div id="clock" class="clock"></div>
+  <div class="main">
+    <div id="headline" class="headline"></div>
+    <div id="subheadline" class="subheadline"></div>
+  </div>
+  <div id="qr" class="qr"></div>
+  <script src="main.js"></script>
+</body>
+</html>
