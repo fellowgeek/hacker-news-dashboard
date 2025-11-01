@@ -7,8 +7,7 @@ A fullscreen digital signage dashboard for displaying live Hacker News headlines
 
 [Live Demo](https://fellowgeek.github.io/hacker-news-dashboard/)
 
-![TV Demo](demp.png)
-
+![TV Demo](demo.png)
 ---
 
 ## Features
